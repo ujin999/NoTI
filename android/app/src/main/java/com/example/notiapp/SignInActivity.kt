@@ -79,21 +79,21 @@ class SignInActivity : AppCompatActivity() {
 
         Log.d(TAG, "로그인 시도: userId=$userId")
 
-        // 빈 필드 확인
-        if (userId.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "아이디와 비밀번호를 모두 입력해주세요.", Toast.LENGTH_SHORT).show()
+        // 디자인 테스트 모드: 검증 없이 바로 대시보드로 이동
+        Toast.makeText(this, "디자인 테스트 모드: 로그인 성공!", Toast.LENGTH_SHORT).show()
 
-            if (userId.isEmpty()) {
-                userIdEditText.error = "아이디를 입력해주세요"
-            }
-            if (password.isEmpty()) {
-                passwordEditText.error = "비밀번호를 입력해주세요"
-            }
-            return
-        }
+        // 더미 토큰 생성 및 저장 (테스트용)
+        val dummyToken = "design_test_dummy_token_${System.currentTimeMillis()}"
+        val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
+        sharedPreferences.edit()
+            .putString("jwt_token", dummyToken)
+            .apply()
 
-        // 로그인 시도
-        signIn(userId, password)
+        // 바로 대시보드 화면으로 이동
+        val intent = Intent(this, DashBoardActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun signIn(userId: String, password: String) {
